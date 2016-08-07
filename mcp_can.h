@@ -41,6 +41,13 @@ class MCP_CAN
     INT8U   m_nfilhit;
     INT8U   SPICS;
 
+    struct t_freqconfig {
+    	INT8U cfg1;
+    	INT8U cfg2;
+    	INT8U cfg3;
+    };
+
+    static const struct t_freqconfig freqconfig[MCP_MAX_NMB_XTAL_FREQUENCIES][CAN_MAX_NMB_FREQUENCIES];
 /*
 *  mcp2515 driver function 
 */
@@ -69,8 +76,8 @@ private:
 
     INT8U mcp2515_readStatus(void);                                     /* read mcp2515's Status        */
     INT8U mcp2515_setCANCTRL_Mode(const INT8U newmode);                 /* set mode                     */
-    INT8U mcp2515_configRate(const INT8U canSpeed, const INT8U clock);                     /* set boadrate                 */
-    INT8U mcp2515_init(const INT8U canSpeed, const INT8U clock);                           /* mcp2515init                  */
+    INT8U mcp2515_configRate(const INT8U canSpeed, const INT8U clock); 	/* set baudrate                 */
+    INT8U mcp2515_init(const INT8U canSpeed, const INT8U clock);
 
     void mcp2515_write_id( const INT8U mcp_addr,                        /* write can id                 */
                                const INT8U ext,
@@ -98,7 +105,7 @@ private:
 public:
     MCP_CAN(INT8U _CS=0);//INT8U _CS);
     void init_CS(INT8U _CS);
-    INT8U begin(INT8U speedset, const INT8U clockset = MCP_16MHz);                                    /* init can                     */
+    INT8U begin(INT8U speedset, const INT8U clockset = MCP_16MHz);	/* init can                     */
     INT8U init_Mask(INT8U num, INT8U ext, INT32U ulData);           /* init Masks                   */
     INT8U init_Filt(INT8U num, INT8U ext, INT32U ulData);           /* init filters                 */
     INT8U sendMsgBuf(INT32U id, INT8U ext, INT8U rtr, INT8U len, const INT8U *buf, bool wait_sent=true);   /* send buf                     */

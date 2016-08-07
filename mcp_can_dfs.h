@@ -244,147 +244,6 @@
 #define MCP_WAKIF       0x40
 #define MCP_MERRF       0x80
 
-/*
- * clock
- */
-#define MCP_16MHz	1
-#define MCP_8MHz	2
-
-/*
- *  speed 16M
- */
-#define MCP_16MHz_1000kBPS_CFG1 (0x00)
-#define MCP_16MHz_1000kBPS_CFG2 (0xD0)
-#define MCP_16MHz_1000kBPS_CFG3 (0x82)
-
-#define MCP_16MHz_500kBPS_CFG1 (0x00)
-#define MCP_16MHz_500kBPS_CFG2 (0xF0)
-#define MCP_16MHz_500kBPS_CFG3 (0x86)
-
-#define MCP_16MHz_250kBPS_CFG1 (0x41)
-#define MCP_16MHz_250kBPS_CFG2 (0xF1)
-#define MCP_16MHz_250kBPS_CFG3 (0x85)
-
-#define MCP_16MHz_200kBPS_CFG1 (0x01)
-#define MCP_16MHz_200kBPS_CFG2 (0xFA)
-#define MCP_16MHz_200kBPS_CFG3 (0x87)
-
-#define MCP_16MHz_125kBPS_CFG1 (0x03)
-#define MCP_16MHz_125kBPS_CFG2 (0xF0)
-#define MCP_16MHz_125kBPS_CFG3 (0x86)
-
-#define MCP_16MHz_100kBPS_CFG1 (0x03)
-#define MCP_16MHz_100kBPS_CFG2 (0xFA)
-#define MCP_16MHz_100kBPS_CFG3 (0x87)
-
-/*
-#define MCP_16MHz_100kBPS_CFG1 (0x03)
-#define MCP_16MHz_100kBPS_CFG2 (0xBA)
-#define MCP_16MHz_100kBPS_CFG3 (0x07)
-*/
-
-#define MCP_16MHz_95kBPS_CFG1 (0x03)
-#define MCP_16MHz_95kBPS_CFG2 (0xAD)
-#define MCP_16MHz_95kBPS_CFG3 (0x07)
-
-#define MCP_16MHz_83k3BPS_CFG1 (0x03)
-#define MCP_16MHz_83k3BPS_CFG2 (0xBE)
-#define MCP_16MHz_83k3BPS_CFG3 (0x07)
-
-#define MCP_16MHz_80kBPS_CFG1 (0x03)
-#define MCP_16MHz_80kBPS_CFG2 (0xFF)
-#define MCP_16MHz_80kBPS_CFG3 (0x87)
-
-#define MCP_16MHz_50kBPS_CFG1 (0x07)
-#define MCP_16MHz_50kBPS_CFG2 (0xFA)
-#define MCP_16MHz_50kBPS_CFG3 (0x87)
-
-#define MCP_16MHz_40kBPS_CFG1 (0x07)
-#define MCP_16MHz_40kBPS_CFG2 (0xFF)
-#define MCP_16MHz_40kBPS_CFG3 (0x87)
-
-#define MCP_16MHz_33kBPS_CFG1 (0x09)
-#define MCP_16MHz_33kBPS_CFG2 (0xBE)
-#define MCP_16MHz_33kBPS_CFG3 (0x07)
-
-#define MCP_16MHz_31k25BPS_CFG1 (0x0F)
-#define MCP_16MHz_31k25BPS_CFG2 (0xF1)
-#define MCP_16MHz_31k25BPS_CFG3 (0x85)
-
-#define MCP_16MHz_20kBPS_CFG1 (0x0F)
-#define MCP_16MHz_20kBPS_CFG2 (0xFF)
-#define MCP_16MHz_20kBPS_CFG3 (0x87)
-
-#define MCP_16MHz_10kBPS_CFG1 (0x1F)
-#define MCP_16MHz_10kBPS_CFG2 (0xFF)
-#define MCP_16MHz_10kBPS_CFG3 (0x87)
-
-#define MCP_16MHz_5kBPS_CFG1 (0x3F)
-#define MCP_16MHz_5kBPS_CFG2 (0xFF)
-#define MCP_16MHz_5kBPS_CFG3 (0x87)
-
-
-/*
- *  speed 8M
- */
-#define MCP_8MHz_1000kBPS_CFG1 (0x00)
-#define MCP_8MHz_1000kBPS_CFG2 (0x80)
-#define MCP_8MHz_1000kBPS_CFG3 (0x00)
-
-#define MCP_8MHz_500kBPS_CFG1 (0x00)
-#define MCP_8MHz_500kBPS_CFG2 (0x90)
-#define MCP_8MHz_500kBPS_CFG3 (0x02)
-
-/*
-#define MCP_8MHz_250kBPS_CFG1 (0x00)
-#define MCP_8MHz_250kBPS_CFG2 (0xb1)
-#define MCP_8MHz_250kBPS_CFG3 (0x05)
-*/
-#define MCP_8MHz_250kBPS_CFG1 (0x00)
-#define MCP_8MHz_250kBPS_CFG2 (0xf0)
-#define MCP_8MHz_250kBPS_CFG3 (0x86)
-
-#define MCP_8MHz_200kBPS_CFG1 (0x00)
-#define MCP_8MHz_200kBPS_CFG2 (0xb4)
-#define MCP_8MHz_200kBPS_CFG3 (0x06)
-
-#define MCP_8MHz_125kBPS_CFG1 (0x01)
-#define MCP_8MHz_125kBPS_CFG2 (0xb1)
-#define MCP_8MHz_125kBPS_CFG3 (0x05)
-
-#define MCP_8MHz_100kBPS_CFG1 (0x01)
-#define MCP_8MHz_100kBPS_CFG2 (0xb4)
-#define MCP_8MHz_100kBPS_CFG3 (0x06)
-
-#define MCP_8MHz_80kBPS_CFG1 (0x01)
-#define MCP_8MHz_80kBPS_CFG2 (0xbf)
-#define MCP_8MHz_80kBPS_CFG3 (0x07)
-
-#define MCP_8MHz_50kBPS_CFG1 (0x03)
-#define MCP_8MHz_50kBPS_CFG2 (0xb4)
-#define MCP_8MHz_50kBPS_CFG3 (0x06)
-
-#define MCP_8MHz_40kBPS_CFG1 (0x03)
-#define MCP_8MHz_40kBPS_CFG2 (0xbf)
-#define MCP_8MHz_40kBPS_CFG3 (0x07)
-
-#define MCP_8MHz_31k25BPS_CFG1 (0x07)
-#define MCP_8MHz_31k25BPS_CFG2 (0xa4)
-#define MCP_8MHz_31k25BPS_CFG3 (0x04)
-
-#define MCP_8MHz_20kBPS_CFG1 (0x07)
-#define MCP_8MHz_20kBPS_CFG2 (0xbf)
-#define MCP_8MHz_20kBPS_CFG3 (0x07)
-
-#define MCP_8MHz_10kBPS_CFG1 (0x0f)
-#define MCP_8MHz_10kBPS_CFG2 (0xbf)
-#define MCP_8MHz_10kBPS_CFG3 (0x07)
-
-#define MCP_8MHz_5kBPS_CFG1 (0x1f)
-#define MCP_8MHz_5kBPS_CFG2 (0xbf)
-#define MCP_8MHz_5kBPS_CFG3 (0x07)
-
-
 
 #define MCPDEBUG        (0)
 #define MCPDEBUG_TXBUF  (0)
@@ -420,22 +279,34 @@
 #define CANDEFAULTIDENT    (0x55CC)
 #define CANDEFAULTIDENTEXT (CAN_EXTID)
 
-#define CAN_5KBPS    1
-#define CAN_10KBPS   2
-#define CAN_20KBPS   3
-#define CAN_31K25BPS 4
-#define CAN_33KBPS   5
-#define CAN_40KBPS   6
-#define CAN_50KBPS   7
-#define CAN_80KBPS   8
-#define CAN_83K3BPS  9
-#define CAN_95KBPS   10
-#define CAN_100KBPS  11
-#define CAN_125KBPS  12
-#define CAN_200KBPS  13
-#define CAN_250KBPS  14
-#define CAN_500KBPS  15
-#define CAN_1000KBPS 16
+/*
+ * Xtal clock
+ */
+#define	MCP_16MHz 0
+#define	MCP_8MHz  1
+#define	MCP_MAX_NMB_XTAL_FREQUENCIES 2
+
+/*
+ * CAN Bitrates
+ */
+#define		CAN_5KBPS		0
+#define		CAN_10KBPS		1
+#define		CAN_20KBPS		2
+#define		CAN31K25BPS		3
+#define		CAN_33KBPS		4
+#define		CAN_40KBPS		5
+#define		CAN_50KBPS		6
+#define		CAN_80KBPS		7
+#define		CAN_83K3BPS		8
+#define		CAN_95KBPS		9
+#define		CAN_100KBPS		10
+#define		CAN_125KBPS		11
+#define		CAN_200KBPS		12
+#define		CAN_250KBPS		13
+#define		CAN_500KBPS		14
+#define		CAN_1000KBPS	15
+#define		CAN_MAX_NMB_FREQUENCIES  16
+
 
 #define CAN_OK                  (0)
 #define CAN_FAILINIT            (1)
