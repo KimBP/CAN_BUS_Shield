@@ -47,7 +47,7 @@ class MCP_CAN
     	INT8U cfg3;
     };
 
-    static const struct t_freqconfig freqconfig[MCP_MAX_NMB_XTAL_FREQUENCIES][CAN_MAX_NMB_FREQUENCIES];
+    static const PROGMEM struct t_freqconfig freqconfig[MCP_MAX_NMB_XTAL_FREQUENCIES][CAN_MAX_NMB_FREQUENCIES];
 /*
 *  mcp2515 driver function 
 */

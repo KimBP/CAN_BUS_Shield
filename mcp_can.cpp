@@ -24,7 +24,7 @@
 #define spi_readwrite SPI.transfer
 #define spi_read() spi_readwrite(0x00)
 
-const PROGMEM struct MCP_CAN::t_freqconfig MCP_CAN::freqconfig[MCP_MAX_NMB_XTAL_FREQUENCIES][CAN_MAX_NMB_FREQUENCIES] = {
+const struct PROGMEM MCP_CAN::t_freqconfig MCP_CAN::freqconfig[MCP_MAX_NMB_XTAL_FREQUENCIES][CAN_MAX_NMB_FREQUENCIES] = {
 	{
 		{0x3F,0xFF,0x87},
 		{0x1F,0xFF,0x87},
@@ -200,9 +200,9 @@ INT8U MCP_CAN::mcp2515_configRate(const INT8U canSpeed, const INT8U clock)
 {
   INT8U cfg1, cfg2, cfg3;
 
-  cfg1 = freqconfig[clock][canSpeed].cfg1;
-  cfg2 = freqconfig[clock][canSpeed].cfg2;
-  cfg3 = freqconfig[clock][canSpeed].cfg3;
+  cfg1 = pgm_read_byte_near(&freqconfig[clock][canSpeed].cfg1);
+  cfg2 = pgm_read_byte_near(&freqconfig[clock][canSpeed].cfg2);
+  cfg3 = pgm_read_byte_near(&freqconfig[clock][canSpeed].cfg3);
 
   if (cfg1 != 0x00 || cfg2 != 0x00 || cfg3 != 00) {
 	mcp2515_setRegister(MCP_CNF1, cfg1);
