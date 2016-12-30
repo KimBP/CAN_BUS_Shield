@@ -74,9 +74,15 @@
 #define MCP_RXB_IDE_M       0x08                                        /* In RXBnSIDL                  */
 #define MCP_RXB_RTR_M       0x40                                        /* In RXBnDLC                   */
 
-#define MCP_STAT_RXIF_MASK   (0x03)
-#define MCP_STAT_RX0IF (1<<0)
-#define MCP_STAT_RX1IF (1<<1)
+#define MCP_STAT_RXIF_MASK   	(0x03)
+#define MCP_STAT_RX0IF 			(1<<0)
+#define MCP_STAT_RX1IF 			(1<<1)
+#define MCP_STAT_TXO_TXREQ		(1<<2)
+#define MCP_STAT_TX0IF			(1<<3)
+#define MCP_STAT_TX1_TXREQ		(1<<4)
+#define MCP_STAT_TX1IF			(1<<5)
+#define MCP_STAT_TX2_TXREQ		(1<<6)
+#define MCP_STAT_TX2IF			(1<<7)
 
 #define MCP_EFLG_RX1OVR (1<<7)
 #define MCP_EFLG_RX0OVR (1<<6)
