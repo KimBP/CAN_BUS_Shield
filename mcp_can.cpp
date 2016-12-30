@@ -421,7 +421,7 @@ INT8U MCP_CAN::mcp2515_init(const INT8U canSpeed, const INT8U clock)            
   mcp2515_reset();
 
   res = mcp2515_setCANCTRL_Mode(MODE_CONFIG);
-  if (res > 0)
+  if (res != MCP2515_OK)
   {
 #if DEBUG_MODE
     Serial.print("Enter setting mode fall\r\n");
@@ -436,8 +436,8 @@ INT8U MCP_CAN::mcp2515_init(const INT8U canSpeed, const INT8U clock)            
   delay(10);
 #endif
 
-  /* set boadrate                 */
-  if (mcp2515_configRate(canSpeed, clock))
+  /* set baud rate                 */
+  if (MCP2515_OK != mcp2515_configRate(canSpeed, clock))
   {
 #if DEBUG_MODE
     Serial.print("set rate fall!!\r\n");
@@ -483,7 +483,7 @@ INT8U MCP_CAN::mcp2515_init(const INT8U canSpeed, const INT8U clock)            
 #endif
     /* enter normal mode            */
     res = mcp2515_setCANCTRL_Mode(MODE_NORMAL);
-    if (res)
+    if (res != MCP2515_OK)
     {
 #if DEBUG_MODE
       Serial.print("Enter Normal Mode Fall!!\r\n");
