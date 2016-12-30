@@ -639,9 +639,26 @@ INT8U MCP_CAN::mcp2515_getNextFreeTXBuf(INT8U *txbuf_n)                 /* get N
   return res;
 }
 
-MCP_CAN::MCP_CAN(INT8U _CS)
+/*********************************************************************************************************
+** Function name:           MCP_CAN - constructor
+** Descriptions:
+*********************************************************************************************************/
+MCP_CAN::MCP_CAN(SPIClass &spi, INT8U _CS)
 {
-  pSPI=&SPI; init_CS(_CS);
+  pSPI=&spi;
+  init_CS(_CS);
+}
+
+/*********************************************************************************************************
+** Function name:           MCP_CAN - constructor - alternative
+** Descriptions:
+*********************************************************************************************************/
+MCP_CAN::MCP_CAN(SPIClass &spi, void (*csFunc)(INT8U val))
+{
+	pSPI = &spi;
+	SPICS = 0;
+	chipSelect = csFunc;
+	// Don't call chipSelect until begin()
 }
 
 /*********************************************************************************************************

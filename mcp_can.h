@@ -30,7 +30,7 @@
 class MCP_CAN
 {
     private:
-    
+    INT8U   smartSPI;
     INT8U   m_nExtFlg;                                                  /* identifier xxxID             */
                                                                         /* either extended (the 29 LSB) */
                                                                         /* or standard (the 11 LSB)     */
@@ -41,7 +41,7 @@ class MCP_CAN
     INT8U   m_nfilhit;
     INT8U   SPICS;
     SPIClass *pSPI;
-
+    void (*chipSelect)(INT8U val);										/* The function to use for chipselecting MCP2515 device */
 /*
 *  mcp2515 driver function 
 */
@@ -96,7 +96,8 @@ private:
     INT8U sendMsg(bool wait_sent=true);                             /* send message                 */
 
 public:
-    MCP_CAN(INT8U _CS=0);//INT8U _CS);
+    MCP_CAN(SPIClass &spi, INT8U _CS=0);
+    MCP_CAN(SPIClass &spi, void (*csFunc)(INT8U val));
     void init_CS(INT8U _CS);
     void setSPI(SPIClass *_pSPI) { pSPI=_pSPI; }
     INT8U begin(INT8U speedset, const INT8U clockset = MCP_16MHz);                                    /* init can                     */
