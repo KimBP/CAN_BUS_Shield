@@ -97,7 +97,7 @@ private:
 
 public:
     MCP_CAN(SPIClass &spi, INT8U _CS=0);
-    MCP_CAN(SPIClass &spi, void (*csFunc)(INT8U val));
+    MCP_CAN(SPIClass &spi, void (*csFunc)(INT8U val), INT8U _smartSPI=true);
     void init_CS(INT8U _CS);
     void setSPI(SPIClass *_pSPI) { pSPI=_pSPI; }
     INT8U begin(INT8U speedset, const INT8U clockset = MCP_16MHz);                                    /* init can                     */

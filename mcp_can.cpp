@@ -18,6 +18,7 @@
   1301  USA
 */
 #include "mcp_can.h"
+#include <string.h>
 
 #define spi_readwrite pSPI->transfer
 #define spi_read() spi_readwrite(0x00)
@@ -40,15 +41,30 @@ void MCP_CAN::mcp2515_reset(void)
 *********************************************************************************************************/
 INT8U MCP_CAN::mcp2515_readRegister(const INT8U address)
 {
-  INT8U ret;
 
-  MCP2515_SELECT();
-  spi_readwrite(MCP_READ);
-  spi_readwrite(address);
-  ret = spi_read();
-  MCP2515_UNSELECT();
+  if (smartSPI) {
+	  INT8U buf[3];
+	  buf[0] = MCP_READ;
+	  buf[1] = address;
+	  buf[2] = 0xFF; // For return value
 
-  return ret;
+	  MCP2515_SELECT();
+	  pSPI->transfer(buf, 3);
+	  MCP2515_UNSELECT();
+
+	  return buf[2];
+
+  } else {
+	  INT8U ret;
+
+	  MCP2515_SELECT();
+	  spi_readwrite(MCP_READ);
+	  spi_readwrite(address);
+	  ret = spi_read();
+	  MCP2515_UNSELECT();
+
+	  return ret;
+  }
 }
 
 /*********************************************************************************************************
@@ -57,15 +73,28 @@ INT8U MCP_CAN::mcp2515_readRegister(const INT8U address)
 *********************************************************************************************************/
 void MCP_CAN::mcp2515_readRegisterS(const INT8U address, INT8U values[], const INT8U n)
 {
-  INT8U i;
-  MCP2515_SELECT();
-  spi_readwrite(MCP_READ);
-  spi_readwrite(address);
-  // mcp2515 has auto-increment of address-pointer
-  for (i = 0; i < n && i < CAN_MAX_CHAR_IN_MESSAGE; i++) {
-    values[i] = spi_read();
+  if (smartSPI && n <= 8) {
+	  unsigned char buf[10];
+
+	  buf[0] = MCP_READ;
+	  buf[1] = address;
+	  // reaming bufs are for return values
+
+	  MCP2515_SELECT();
+	  pSPI->transfer(buf, 2+n);
+	  MCP2515_UNSELECT();
+
+	  memcpy(values, &buf[2],n);
+  } else {
+	  MCP2515_SELECT();
+	  spi_readwrite(MCP_READ);
+	  spi_readwrite(address);
+	  // mcp2515 has auto-increment of address-pointer
+	  for (int i = 0; i < n && i < CAN_MAX_CHAR_IN_MESSAGE; i++) {
+		values[i] = spi_read();
+	  }
+	  MCP2515_UNSELECT();
   }
-  MCP2515_UNSELECT();
 }
 
 /*********************************************************************************************************
@@ -74,11 +103,22 @@ void MCP_CAN::mcp2515_readRegisterS(const INT8U address, INT8U values[], const I
 *********************************************************************************************************/
 void MCP_CAN::mcp2515_setRegister(const INT8U address, const INT8U value)
 {
-  MCP2515_SELECT();
-  spi_readwrite(MCP_WRITE);
-  spi_readwrite(address);
-  spi_readwrite(value);
-  MCP2515_UNSELECT();
+  if (smartSPI) {
+	  unsigned char buf[3];
+	  buf[0] = MCP_WRITE;
+	  buf[1] = address;
+	  buf[2] = value;
+
+	  MCP2515_SELECT();
+	  pSPI->transfer(buf, 3);
+	  MCP2515_UNSELECT();
+  } else {
+	  MCP2515_SELECT();
+	  spi_readwrite(MCP_WRITE);
+	  spi_readwrite(address);
+	  spi_readwrite(value);
+	  MCP2515_UNSELECT();
+  }
 }
 
 /*********************************************************************************************************
@@ -87,16 +127,28 @@ void MCP_CAN::mcp2515_setRegister(const INT8U address, const INT8U value)
 *********************************************************************************************************/
 void MCP_CAN::mcp2515_setRegisterS(const INT8U address, const INT8U values[], const INT8U n)
 {
-  INT8U i;
-  MCP2515_SELECT();
-  spi_readwrite(MCP_WRITE);
-  spi_readwrite(address);
+	if (smartSPI && n <= 8) {
+		unsigned char buf[10];
 
-  for (i = 0; i < n; i++)
-  {
-    spi_readwrite(values[i]);
-  }
-  MCP2515_UNSELECT();
+		buf[0] = MCP_WRITE;
+		buf[1] = address;
+		memcpy(&buf[2], values, n);
+
+		MCP2515_SELECT();
+		pSPI->transfer(buf, 2+n);
+		MCP2515_UNSELECT();
+	} else {
+		INT8U i;
+		MCP2515_SELECT();
+		spi_readwrite(MCP_WRITE);
+		spi_readwrite(address);
+
+		for (i = 0; i < n; i++)
+		{
+			spi_readwrite(values[i]);
+		}
+		MCP2515_UNSELECT();
+	}
 }
 
 /*********************************************************************************************************
@@ -105,12 +157,24 @@ void MCP_CAN::mcp2515_setRegisterS(const INT8U address, const INT8U values[], co
 *********************************************************************************************************/
 void MCP_CAN::mcp2515_modifyRegister(const INT8U address, const INT8U mask, const INT8U data)
 {
-  MCP2515_SELECT();
-  spi_readwrite(MCP_BITMOD);
-  spi_readwrite(address);
-  spi_readwrite(mask);
-  spi_readwrite(data);
-  MCP2515_UNSELECT();
+	if (smartSPI) {
+		unsigned char buf[4];
+		buf[0] = MCP_BITMOD;
+		buf[1] = address;
+		buf[2] = mask;
+		buf[3] = data;
+
+		MCP2515_SELECT();
+		pSPI->transfer(buf, 4);
+		MCP2515_UNSELECT();
+	} else {
+		MCP2515_SELECT();
+		spi_readwrite(MCP_BITMOD);
+		spi_readwrite(address);
+		spi_readwrite(mask);
+		spi_readwrite(data);
+		MCP2515_UNSELECT();
+	}
 }
 
 /*********************************************************************************************************
@@ -119,13 +183,27 @@ void MCP_CAN::mcp2515_modifyRegister(const INT8U address, const INT8U mask, cons
 *********************************************************************************************************/
 INT8U MCP_CAN::mcp2515_readStatus(void)
 {
-  INT8U i;
-  MCP2515_SELECT();
-  spi_readwrite(MCP_READ_STATUS);
-  i = spi_read();
-  MCP2515_UNSELECT();
+	if (smartSPI) {
+		unsigned char buf[2];
 
-  return i;
+		buf[0] = MCP_READ_STATUS;
+		// buf[1] is read status
+
+		MCP2515_SELECT();
+		pSPI->transfer(buf,2);
+		MCP2515_UNSELECT();
+
+		return buf[1];
+
+	} else {
+		INT8U status;
+		MCP2515_SELECT();
+		spi_readwrite(MCP_READ_STATUS);
+		status = spi_read();
+		MCP2515_UNSELECT();
+
+		return status;
+	}
 }
 
 /*********************************************************************************************************
@@ -641,6 +719,7 @@ INT8U MCP_CAN::mcp2515_getNextFreeTXBuf(INT8U *txbuf_n)                 /* get N
 *********************************************************************************************************/
 MCP_CAN::MCP_CAN(SPIClass &spi, INT8U _CS)
 {
+  smartSPI = 0;
   pSPI=&spi;
   init_CS(_CS);
 }
@@ -649,8 +728,9 @@ MCP_CAN::MCP_CAN(SPIClass &spi, INT8U _CS)
 ** Function name:           MCP_CAN - constructor - alternative
 ** Descriptions:
 *********************************************************************************************************/
-MCP_CAN::MCP_CAN(SPIClass &spi, void (*csFunc)(INT8U val))
+MCP_CAN::MCP_CAN(SPIClass &spi, void (*csFunc)(INT8U val), INT8U _smartSPI)
 {
+	smartSPI = _smartSPI;
 	pSPI = &spi;
 	SPICS = 0;
 	chipSelect = csFunc;
