@@ -870,7 +870,9 @@ INT8U MCP_CAN::sendMsg(bool wait_sent)
   uint16_t uiTimeOut = 0;
 
   do {
-    if (uiTimeOut > 0) delayMicroseconds(10);
+    if (uiTimeOut > 0) {
+    	delayMicroseconds(10);
+    }
     res = mcp2515_getNextFreeTXBuf(&txbuf_n);                       /* info = addr.                 */
     uiTimeOut++;
   } while (res == MCP_ALLTXBUSY && (uiTimeOut < TIMEOUTVALUE));
@@ -889,7 +891,9 @@ INT8U MCP_CAN::sendMsg(bool wait_sent)
     uiTimeOut = 0;
     do
     {
-      if (uiTimeOut > 0) delayMicroseconds(10);
+      if (uiTimeOut > 0) {
+    	  delayMicroseconds(10);
+      }
       uiTimeOut++;
       res1 = mcp2515_readRegister(txbuf_n - 1);                     /* read send buff ctrl reg  */
       res1 = res1 & 0x08;
