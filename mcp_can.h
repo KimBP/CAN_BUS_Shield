@@ -112,6 +112,9 @@ public:
     INT32U getCanId(void);                                          /* get can id when receive      */
     INT8U isRemoteRequest(void);                                    /* get RR flag when receive     */
     INT8U isExtendedFrame(void);                                    /* did we recieve 29bit frame?  */
+
+    INT8U sendMsgBufUnconditional(INT8U txNo, INT32U id, INT8U ext, INT8U len, const INT8U *buf);   /* Send buf via specific Tx buff */
+    INT8U readMsgUnconditional(const INT8U buffer_sidh_addr);		/* Read from a specific Rx buff.*/
     INT8U mcp2515_readStatus(void);                                 /* read mcp2515's Status        */
     void getData(INT8U *len, INT8U buf[]);							/* get data from latest receive */
     void enableInterrupt(INT8U mask);								/* Enable interrupts represented by high bits in mask */

@@ -920,6 +920,26 @@ INT8U MCP_CAN::sendMsgBuf(INT32U id, INT8U ext, INT8U rtr, INT8U len, const INT8
 }
 
 /*********************************************************************************************************
+** Function name:           sendMsgBufUnconditional
+** Descriptions:            send buf using specific tx buffer
+*********************************************************************************************************/
+INT8U MCP_CAN::sendMsgBufUnconditional(INT8U txNo, INT32U id, INT8U ext, INT8U len, const INT8U *buf)
+{
+	if (txNo > 2) return CAN_FAIL;
+
+    const INT8U ctrlregs[MCP_N_TXBUFFERS] = { MCP_TXB0CTRL, MCP_TXB1CTRL, MCP_TXB2CTRL };
+
+	INT8U txbuf_n = ctrlregs[txNo] +1; // Most functions take the CTRL register + 1 (a.k.a. TXBnSIDH)
+
+	setMsg(id,ext,len, buf);
+
+	mcp2515_write_canMsg(txbuf_n);
+    mcp2515_start_transmit( txbuf_n );
+
+    return CAN_OK;
+}
+
+/*********************************************************************************************************
 ** Function name:           sendMsgBuf
 ** Descriptions:            send buf
 *********************************************************************************************************/
@@ -929,6 +949,28 @@ INT8U MCP_CAN::sendMsgBuf(INT32U id, INT8U ext, INT8U len, const INT8U *buf, boo
   return sendMsg(wait_sent);
 }
 
+/*********************************************************************************************************
+** Function name:           readMsgUnconditional
+** Descriptions:            read message from specific rx buf
+*********************************************************************************************************/
+INT8U MCP_CAN::readMsgUnconditional(const INT8U rxNo)
+{
+	if (rxNo > 1) return CAN_NOMSG;
+
+	if (0 == rxNo)
+	{
+		mcp2515_read_canMsg( MCP_RXBUF_0);
+		clearInterrupt(MCP_RX0IF);
+		return CAN_OK;
+	}
+	if (1 == rxNo)
+	{
+		mcp2515_read_canMsg( MCP_RXBUF_1);
+		clearInterrupt(MCP_RX1IF);
+		return CAN_OK;
+	}
+	return CAN_NOMSG;
+}
 
 /*********************************************************************************************************
 ** Function name:           readMsg
@@ -942,15 +984,11 @@ INT8U MCP_CAN::readMsg()
 
   if ( stat & MCP_STAT_RX0IF )                                        /* Msg in Buffer 0              */
   {
-    mcp2515_read_canMsg( MCP_RXBUF_0);
-    mcp2515_modifyRegister(MCP_CANINTF, MCP_RX0IF, 0);
-    res = CAN_OK;
+	  return readMsgUnconditional(0);
   }
   else if ( stat & MCP_STAT_RX1IF )                                   /* Msg in Buffer 1              */
   {
-    mcp2515_read_canMsg( MCP_RXBUF_1);
-    mcp2515_modifyRegister(MCP_CANINTF, MCP_RX1IF, 0);
-    res = CAN_OK;
+	  return readMsgUnconditional(1);
   }
   else
   {
