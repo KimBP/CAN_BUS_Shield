@@ -68,7 +68,6 @@ private:
                                 const INT8U mask,
                                 const INT8U data);
 
-    INT8U mcp2515_readStatus(void);                                     /* read mcp2515's Status        */
     INT8U mcp2515_setCANCTRL_Mode(const INT8U newmode);                 /* set mode                     */
     INT8U mcp2515_configRate(const INT8U canSpeed, const INT8U clock);                     /* set boadrate                 */
     INT8U mcp2515_init(const INT8U canSpeed, const INT8U clock);                           /* mcp2515init                  */
@@ -112,6 +111,11 @@ public:
     INT32U getCanId(void);                                          /* get can id when receive      */
     INT8U isRemoteRequest(void);                                    /* get RR flag when receive     */
     INT8U isExtendedFrame(void);                                    /* did we recieve 29bit frame?  */
+    INT8U mcp2515_readStatus(void);                                 /* read mcp2515's Status        */
+    void getData(INT8U *len, INT8U buf[]);							/* get data from latest receive */
+    void enableInterrupt(INT8U mask);								/* Enable interrupts represented by high bits in mask */
+    void disableInterrupt(INT8U mask);								/* Disable interrupts represented by high bits in mask */
+    void clearInterrupt(INT8U ints);								/* Clear interrupt flags        */
 };
 
 #endif

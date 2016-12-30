@@ -458,7 +458,7 @@ INT8U MCP_CAN::mcp2515_init(const INT8U canSpeed, const INT8U clock)            
     mcp2515_initCANBuffers();
 
     /* interrupt mode               */
-    mcp2515_setRegister(MCP_CANINTE, MCP_RX0IF | MCP_RX1IF);
+    enableInterrupt(MCP_RX0IF | MCP_RX1IF);
 
 #if (DEBUG_RXANY==1)
     /* enable both receive-buffers  */
@@ -1043,6 +1043,44 @@ INT8U MCP_CAN::isExtendedFrame(void)
   return m_nExtFlg;
 }
 
+/*********************************************************************************************************
+** Function name:           getData
+** Descriptions:            Return data from latest received message
+*********************************************************************************************************/
+void MCP_CAN::getData(INT8U *len, INT8U buf[])
+{
+	*len = m_nDlc;
+	for(int i=0; i < m_nDlc; i++) {
+		buf[i] = m_nDta[i];
+	}
+}
+
+/*********************************************************************************************************
+** Function name:           enableInterrupt
+** Descriptions:            Enable interrupts defined in mask
+*********************************************************************************************************/
+void MCP_CAN::enableInterrupt(INT8U mask)
+{
+	mcp2515_modifyRegister(MCP_CANINTE, mask, 0xFF);
+}
+
+/*********************************************************************************************************
+** Function name:           disableInterrupt
+** Descriptions:            Disable interrupts defined in mask
+*********************************************************************************************************/
+void MCP_CAN::disableInterrupt(INT8U mask)
+{
+	mcp2515_modifyRegister(MCP_CANINTE, mask, 0);
+}
+
+/*********************************************************************************************************
+** Function name:           clearInterrupt
+** Descriptions:            Clear interrupts defined in ints
+*********************************************************************************************************/
+void MCP_CAN::clearInterrupt(INT8U ints)
+{
+	mcp2515_modifyRegister(MCP_CANINTF, ints, 0);
+}
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
