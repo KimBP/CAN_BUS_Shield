@@ -570,11 +570,7 @@ void MCP_CAN::mcp2515_write_canMsg( const INT8U buffer_sidh_addr)
   INT8U mcp_addr;
   mcp_addr = buffer_sidh_addr;
   mcp2515_setRegisterS(mcp_addr + 5, m_nDta, m_nDlc );                /* write data bytes             */
-  if ( m_nRtr == 1)                                                   /* if RTR set bit in byte       */
-  {
-    m_nDlc |= MCP_RTR_MASK;
-  }
-  mcp2515_setRegister((mcp_addr + 4), m_nDlc );                      /* write the RTR and DLC        */
+  mcp2515_setRegister((mcp_addr + 4), m_nDlc |( m_nRtr ? MCP_RTR_MASK : 0 ));                      /* write the RTR and DLC        */
   mcp2515_write_id(mcp_addr, m_nExtFlg, m_nID );                     /* write CAN id                 */
 
 }
