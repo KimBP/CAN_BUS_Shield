@@ -535,6 +535,8 @@ INT8U MCP_CAN::mcp2515_init(const INT8U canSpeed, const INT8U clock)            
     /* init canbuffers              */
     mcp2515_initCANBuffers();
 
+#if 0
+
     /* interrupt mode               */
     enableInterrupt(MCP_RX0IF | MCP_RX1IF);
 
@@ -558,6 +560,15 @@ INT8U MCP_CAN::mcp2515_init(const INT8U canSpeed, const INT8U clock)            
                            MCP_RXB_RX_STDEXT | MCP_RXB_BUKT_MASK );
     mcp2515_modifyRegister(MCP_RXB1CTRL, MCP_RXB_RX_MASK,
                            MCP_RXB_RX_STDEXT);
+#endif
+#else
+    /* interrupt mode               */
+    enableInterrupt(MCP_RX0IF);
+
+    /* Enable just RXB0 - we don't know the order (?)of reception if using more buffers */
+    mcp2515_modifyRegister(MCP_RXB0CTRL,
+                           MCP_RXB_RX_MASK,
+                           MCP_RXB_RX_ANY);
 #endif
     /* enter normal mode            */
     res = mcp2515_setCANCTRL_Mode(MODE_NORMAL);
