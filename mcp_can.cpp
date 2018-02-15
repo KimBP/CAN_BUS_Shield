@@ -81,7 +81,7 @@ void MCP_CAN::mcp2515_readRegisterS(const INT8U address, INT8U values[], const I
 	  // reaming bufs are for return values
 
 	  MCP2515_SELECT();
-	  pSPI->transfer(buf, 2+n);
+	  pSPI->transfer(buf, static_cast<uint8_t>(2+n));
 	  MCP2515_UNSELECT();
 
 	  memcpy(values, &buf[2],n);
@@ -135,7 +135,7 @@ void MCP_CAN::mcp2515_setRegisterS(const INT8U address, const INT8U values[], co
 		memcpy(&buf[2], values, n);
 
 		MCP2515_SELECT();
-		pSPI->transfer(buf, 2+n);
+		pSPI->transfer(buf, static_cast<uint8_t>(2+n));
 		MCP2515_UNSELECT();
 	} else {
 		INT8U i;
@@ -611,7 +611,7 @@ void MCP_CAN::mcp2515_write_id( const INT8U mcp_addr, const INT8U ext, const INT
     tbufdata[MCP_EID8] = (INT8U) (canid >> 8);
     canid = (uint16_t)(id >> 16);
     tbufdata[MCP_SIDL] = (INT8U) (canid & 0x03);
-    tbufdata[MCP_SIDL] += (INT8U) ((canid & 0x1C) << 3);
+    tbufdata[MCP_SIDL] = (INT8U) (tbufdata[MCP_SIDL]+((canid & 0x1C) << 3));
     tbufdata[MCP_SIDL] |= MCP_TXB_EXIDE_M;
     tbufdata[MCP_SIDH] = (INT8U) (canid >> 5 );
   }
@@ -658,8 +658,8 @@ void MCP_CAN::mcp2515_write_canMsg( const INT8U buffer_sidh_addr)
 {
   INT8U mcp_addr;
   mcp_addr = buffer_sidh_addr;
-  mcp2515_setRegisterS(mcp_addr + 5, m_nDta, m_nDlc );                /* write data bytes             */
-  mcp2515_setRegister((mcp_addr + 4), m_nDlc |( m_nRtr ? MCP_RTR_MASK : 0 ));                      /* write the RTR and DLC        */
+  mcp2515_setRegisterS((INT8U)(mcp_addr + 5), m_nDta,  m_nDlc );                /* write data bytes             */
+  mcp2515_setRegister((INT8U)(mcp_addr + 4), (INT8U)(m_nDlc |( m_nRtr ? MCP_RTR_MASK : 0 )));                      /* write the RTR and DLC        */
   mcp2515_write_id(mcp_addr, m_nExtFlg, m_nID );                     /* write CAN id                 */
 
 }
@@ -676,8 +676,8 @@ void MCP_CAN::mcp2515_read_canMsg( const INT8U buffer_sidh_addr)        /* read 
 
   mcp2515_read_id( mcp_addr, &m_nExtFlg, &m_nID );
 
-  ctrl = mcp2515_readRegister( mcp_addr - 1 );
-  m_nDlc = mcp2515_readRegister( mcp_addr + 4 );
+  ctrl = mcp2515_readRegister( (INT8U)(mcp_addr - 1) );
+  m_nDlc = mcp2515_readRegister( (INT8U)(mcp_addr + 4) );
 
   if ((ctrl & 0x08)) {
     m_nRtr = 1;
@@ -687,7 +687,7 @@ void MCP_CAN::mcp2515_read_canMsg( const INT8U buffer_sidh_addr)        /* read 
   }
 
   m_nDlc &= MCP_DLC_MASK;
-  mcp2515_readRegisterS( mcp_addr + 5, &(m_nDta[0]), m_nDlc );
+  mcp2515_readRegisterS( (INT8U)(mcp_addr + 5), &(m_nDta[0]), m_nDlc );
 }
 
 /*********************************************************************************************************
@@ -696,7 +696,7 @@ void MCP_CAN::mcp2515_read_canMsg( const INT8U buffer_sidh_addr)        /* read 
 *********************************************************************************************************/
 void MCP_CAN::mcp2515_start_transmit(const INT8U mcp_addr)              /* start transmit               */
 {
-  mcp2515_modifyRegister( mcp_addr - 1 , MCP_TXB_TXREQ_M, MCP_TXB_TXREQ_M );
+  mcp2515_modifyRegister( (INT8U)(mcp_addr - 1) , MCP_TXB_TXREQ_M, MCP_TXB_TXREQ_M );
 }
 
 /*********************************************************************************************************
@@ -715,7 +715,7 @@ INT8U MCP_CAN::mcp2515_getNextFreeTXBuf(INT8U *txbuf_n)                 /* get N
   for (i = 0; i < MCP_N_TXBUFFERS; i++) {
     ctrlval = mcp2515_readRegister( ctrlregs[i] );
     if ( (ctrlval & MCP_TXB_TXREQ_M) == 0 ) {
-      *txbuf_n = ctrlregs[i] + 1;                                 /* return SIDH-address of Buffe */
+      *txbuf_n = (INT8U)(ctrlregs[i] + 1);                                 /* return SIDH-address of Buffe */
       /* r                            */
       res = MCP2515_OK;
       return res;                                                 /* ! function exit              */
@@ -982,7 +982,7 @@ INT8U MCP_CAN::sendMsg(bool wait_sent)
     	  delayMicroseconds(10);
       }
       uiTimeOut++;
-      res1 = mcp2515_readRegister(txbuf_n - 1);                     /* read send buff ctrl reg  */
+      res1 = mcp2515_readRegister((INT8U)(txbuf_n - 1));                     /* read send buff ctrl reg  */
       res1 = res1 & 0x08;
     } while (res1 && (uiTimeOut < TIMEOUTVALUE));
 
@@ -1016,7 +1016,7 @@ INT8U MCP_CAN::sendMsgBufUnconditional(INT8U txNo, INT32U id, INT8U ext, INT8U l
 
     const INT8U ctrlregs[MCP_N_TXBUFFERS] = { MCP_TXB0CTRL, MCP_TXB1CTRL, MCP_TXB2CTRL };
 
-	INT8U txbuf_n = ctrlregs[txNo] +1; // Most functions take the CTRL register + 1 (a.k.a. TXBnSIDH)
+	INT8U txbuf_n =(INT8U)( ctrlregs[txNo] +1); // Most functions take the CTRL register + 1 (a.k.a. TXBnSIDH)
 
 	setMsg(id,ext,len, buf);
 
