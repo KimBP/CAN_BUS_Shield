@@ -78,7 +78,7 @@ void MCP_CAN::mcp2515_readRegisterS(const INT8U address, INT8U values[], const I
 
 	  buf[0] = MCP_READ;
 	  buf[1] = address;
-	  // reaming bufs are for return values
+	  memset(&buf[2], 0xFF, n); // Define dummies for unit testing
 
 	  MCP2515_SELECT();
 	  pSPI->transfer(buf, static_cast<uint8_t>(2+n));
@@ -187,6 +187,7 @@ INT8U MCP_CAN::mcp2515_readStatus(void)
 		unsigned char buf[2];
 
 		buf[0] = MCP_READ_STATUS;
+		buf[1] = 0xFF; // Dummy - placeholder for status read back
 		// buf[1] is read status
 
 		MCP2515_SELECT();
