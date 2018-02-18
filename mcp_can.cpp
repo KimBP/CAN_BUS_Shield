@@ -986,7 +986,7 @@ INT8U MCP_CAN::sendMsg(bool wait_sent)
       }
       uiTimeOut++;
       res1 = mcp2515_readRegister((INT8U)(txbuf_n - 1));                     /* read send buff ctrl reg  */
-      res1 = res1 & 0x08;
+      res1 = res1 & MCP_TXB_TXREQ_M;
     } while (res1 && (uiTimeOut < TIMEOUTVALUE));
 
     if (uiTimeOut == TIMEOUTVALUE)                                      /* send msg timeout             */
