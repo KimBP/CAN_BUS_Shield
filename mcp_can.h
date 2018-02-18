@@ -47,7 +47,6 @@ class MCP_CAN
 */
    // private:
 private:
-
     void mcp2515_reset(void);                                           /* reset mcp2515                */
 
     INT8U mcp2515_readRegister(const INT8U address);                    /* read mcp2515's register      */
@@ -96,7 +95,8 @@ private:
     INT8U sendMsg(bool wait_sent=true);                             /* send message                 */
 
 public:
-    MCP_CAN(SPIClass &spi, INT8U _CS=0);
+    MCP_CAN(SPIClass &spi, INT8U _CS=0); // !! Don't use this constructor
+
     MCP_CAN(SPIClass &spi, void (*csFunc)(INT8U val), INT8U _smartSPI=true);
     void init_CS(INT8U _CS);
     void setSPI(SPIClass *_pSPI) { pSPI=_pSPI; }

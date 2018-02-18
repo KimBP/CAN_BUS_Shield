@@ -734,6 +734,8 @@ MCP_CAN::MCP_CAN(SPIClass &spi, INT8U _CS)
   smartSPI = 0;
   pSPI=&spi;
   init_CS(_CS);
+  // !! Don't use this constructor.
+  //    chip select function pointer is not set
 }
 
 /*********************************************************************************************************
